@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Construtor de Automatos</string>
+    <string name="action_settings">Resetar</string>
+    <string name="action_add_estado">Adicionar estado</string>
+    <string name="action_add_transition">Adicionar transição</string>
+    <string name="action_delete_transition">Deletar transição</string>
+    <string name="action_altera_estado">Alterar Label</string>
+    <string name="action_altera_transition">Alterar transição</string>
+</resources>
