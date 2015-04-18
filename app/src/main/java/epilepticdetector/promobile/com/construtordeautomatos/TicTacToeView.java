@@ -11,6 +11,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -194,7 +195,7 @@ public class TicTacToeView extends View {
         return true;
 	}
 
-    public static void delocaPontosParaBorda(Transicao transicao, Estado estado){
+    public static void delocaPontosParaBorda(Transicao transicao, Estado estado, Canvas canvas){
         // gera a hipotenusa
 
         float h = Util.gerarHipotenusa(
@@ -212,11 +213,30 @@ public class TicTacToeView extends View {
         // sendo que h deve ser dubtraido do raio do estado que no caso
         // é 25, pois a flecha deve ser desenhada na borda do estado
 
-        float inicioX = (float) (( h - Circle.RAIO ) * Math.cos( Math.toRadians( gr ) ));
-        float inicioY = (float) (( h - Circle.RAIO ) * Math.sin( Math.toRadians( gr ) ));
+        int distanciaDaBorda = 10;
+
+
+        float inicioX = (float) (( h - Circle.RAIO - distanciaDaBorda) * Math.cos( Math.toRadians( gr ) ));
+        float inicioY = (float) (( h - Circle.RAIO - distanciaDaBorda) * Math.sin( Math.toRadians( gr ) ));
 
         transicao.getInicio().setAixisX(inicioX+estado.getCurrentX());
         transicao.getInicio().setAixisY(inicioY+estado.getCurrentY());
+
+        float x= transicao.getInicio().getAixisX();
+        float y=transicao.getInicio().getAixisY();
+
+        //put the lines in an array
+        float[] linePts = new float[] { x-10, y+5, x-10, y-5};
+
+        //create the matrix
+        Matrix rotateMat = new Matrix();
+
+        //rotate the matrix around the center
+        rotateMat.setRotate((float) gr, x, y);
+        rotateMat.mapPoints(linePts);
+
+        canvas.drawLine(x, y, linePts[0], linePts[1], transicao.getCor());
+        canvas.drawLine(x, y, linePts[2], linePts[3], transicao.getCor());
 
         ///
         // gera a hipotenusa
@@ -235,23 +255,60 @@ public class TicTacToeView extends View {
         // sendo que h deve ser dubtraido do raio do estado que no caso
         // é 25, pois a flecha deve ser desenhada na borda do estado
 
-        inicioX = (float) (( h - Circle.RAIO ) * Math.cos( Math.toRadians( gr ) ));
-        inicioY = (float) (( h - Circle.RAIO ) * Math.sin( Math.toRadians( gr ) ));
+        inicioX = (float) (( h - Circle.RAIO - distanciaDaBorda) * Math.cos( Math.toRadians( gr ) ));
+        inicioY = (float) (( h - Circle.RAIO - distanciaDaBorda) * Math.sin( Math.toRadians( gr ) ));
 
         transicao.getFim().setAixisX(inicioX+ transicao.diferenteBegin(estado).getCurrentX());
         transicao.getFim().setAixisY(inicioY+ transicao.diferenteBegin(estado).getCurrentY());
+
+        x = transicao.getFim().getAixisX();
+        y = transicao.getFim().getAixisY();
+
+        //put the lines in an array
+        linePts = new float[] { x-10, y+5, x-10, y-5};
+
+        //create the matrix
+        rotateMat = new Matrix();
+
+        //rotate the matrix around the center
+        rotateMat.setRotate((float) gr, x, y);
+        rotateMat.mapPoints(linePts);
+
+        canvas.drawLine(x, y, linePts[0], linePts[1], transicao.getCor());
+        canvas.drawLine(x, y, linePts[2], linePts[3], transicao.getCor());
+
 
     }
     //Desenha todos os circulos na tela do celular
 	private void drawCirclesOnCanvas(Canvas canvas) {
 		for (Estado c : mCircles) {
-			canvas.drawCircle(c.getCurrentX(), c.getCurrentY(), c.getRadius(), c.getCor());
+
+//            estado2.setCurrentX(300);
+//            estado2.setCurrentY(200);
+
 
             Paint paint = new Paint();
             paint.setColor(Color.BLACK);
+            paint.setStyle(Paint.Style.STROKE);
+
             paint.setTextSize(20);
 
+            //                      X1   Y1    X2   Y2
+            RectF oval1 = new RectF(c.getCurrentX()-30, c.getCurrentY()-70, c.getCurrentX()+30, c.getCurrentY());
+            //                       270                 150     330                   200
+            canvas.drawArc(oval1, 0, -180, false, paint);
+
+            float arrowCentroX = c.getCurrentX() - Circle.RAIO+10;
+            float arrowCentroY = c.getCurrentY() - Circle.RAIO+5;
+
+            canvas.drawCircle(c.getCurrentX(), c.getCurrentY(), c.getRadius(), c.getCor());
+            canvas.drawLine(arrowCentroX, arrowCentroY, arrowCentroX-5, arrowCentroY-10, paint);
+            canvas.drawLine(arrowCentroX, arrowCentroY, arrowCentroX+5, arrowCentroY-10, paint);
+            canvas.drawText(c.getNome(),c.getCurrentX(), c.getCurrentY()-73, paint);
+
+
             canvas.drawText(c.getNome(),c.getCurrentX(), c.getCurrentY(), paint);
+
 
             if (c.isMoveu()) {
                 int i;
@@ -259,7 +316,7 @@ public class TicTacToeView extends View {
                 for (i = 0; i < c.getTransicoes().size(); i = i+3){
                     //Circulo é a origem
                     if (t.get(i).equalsBegin(c)) {
-                        delocaPontosParaBorda(t.get(i), c);
+                        delocaPontosParaBorda(t.get(i), c, canvas);
 
 
                         //linha tg
