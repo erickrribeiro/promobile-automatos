@@ -1,7 +1,9 @@
-package epilepticdetector.promobile.com.construtordeautomatos;
+package epilepticdetector.promobile.com.construtordeautomatos.state;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import epilepticdetector.promobile.com.construtordeautomatos.transition.Transicao;
 
 /**
  * Created by erickribeiro on 18/03/15.
@@ -16,9 +18,9 @@ public class Estado extends Circle {
     private List<Transicao> transicoes;
 
     public Estado( String nome, boolean inicial, boolean estFinal ) {
-        super(Circle.DEFAULT_X, Circle.DEFAULT_Y, Circle.RAIO);
+        super(Circle.DEFAULT_X, Circle.DEFAULT_Y, Circle.RAIO, inicial, estFinal);
         this.codigo = id++;
-        this.nome = String.valueOf(codigo);
+        setNome(String.valueOf(codigo));
         this.inicial = inicial;
         this.estFinal = estFinal;
         transicoes = new ArrayList<Transicao>();
@@ -45,10 +47,12 @@ public class Estado extends Circle {
     }
 
     public void setNome(String nome) {
+        super.getLabel().setText(nome);
         this.nome = nome;
     }
 
     public void setFinal( boolean estFinal ) {
+        super.setStateFinal(estFinal);
         this.estFinal = estFinal;
     }
 

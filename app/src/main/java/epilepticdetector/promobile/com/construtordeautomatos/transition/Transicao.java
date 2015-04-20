@@ -1,7 +1,10 @@
 
-package epilepticdetector.promobile.com.construtordeautomatos;
+package epilepticdetector.promobile.com.construtordeautomatos.transition;
 
-public class Transicao extends Line{
+import epilepticdetector.promobile.com.construtordeautomatos.Coordinate;
+import epilepticdetector.promobile.com.construtordeautomatos.state.Estado;
+
+public class Transicao extends Line {
     private static int id = 0;
     private String simbolo;
     private Estado inicio;

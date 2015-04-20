@@ -110,6 +110,9 @@ public class Principal extends ActionBarActivity {
             case R.id.action_altera_transition:
                 mTTTView.alteraTrasicao();
                 break;
+            case R.id.action_altera_transition_for_state_final:
+                mTTTView.changeToEndState();
+                break;
         }
 
         return super.onOptionsItemSelected(item);

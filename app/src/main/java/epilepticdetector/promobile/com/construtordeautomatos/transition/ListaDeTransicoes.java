@@ -1,9 +1,12 @@
-package epilepticdetector.promobile.com.construtordeautomatos;
+package epilepticdetector.promobile.com.construtordeautomatos.transition;
 
 import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import epilepticdetector.promobile.com.construtordeautomatos.Coordinate;
+import epilepticdetector.promobile.com.construtordeautomatos.state.Estado;
 
 /**
  * Created by erickribeiro on 01/04/15.
@@ -15,7 +18,7 @@ public class ListaDeTransicoes {
         listagem =  new ArrayList<Transicao>();
     }
 
-    public Transicao add(Coordinate origem, Coordinate destino, Estado inicio, Estado fim ){
+    public Transicao add(Coordinate origem, Coordinate destino, Estado inicio, Estado fim){
         Transicao transicao =  new Transicao("", origem, destino, inicio, fim);
         listagem.add(transicao);
         return transicao;

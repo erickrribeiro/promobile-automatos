@@ -5,6 +5,8 @@ import android.graphics.Matrix;
 import java.util.ArrayList;
 import java.util.List;
 
+import epilepticdetector.promobile.com.construtordeautomatos.state.Circle;
+
 /**
  * Created by erickribeiro on 19/03/15.
  */

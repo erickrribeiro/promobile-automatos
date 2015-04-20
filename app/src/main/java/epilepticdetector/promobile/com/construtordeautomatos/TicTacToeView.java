@@ -2,14 +2,11 @@ package epilepticdetector.promobile.com.construtordeautomatos;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
@@ -17,7 +14,13 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
+
+import epilepticdetector.promobile.com.construtordeautomatos.state.Circle;
+import epilepticdetector.promobile.com.construtordeautomatos.state.Estado;
+import epilepticdetector.promobile.com.construtordeautomatos.transition.Arrow;
+import epilepticdetector.promobile.com.construtordeautomatos.transition.Line;
+import epilepticdetector.promobile.com.construtordeautomatos.transition.ListaDeTransicoes;
+import epilepticdetector.promobile.com.construtordeautomatos.transition.Transicao;
 
 public class TicTacToeView extends View {
 	final Paint mBackgroundPaint;
@@ -28,7 +31,7 @@ public class TicTacToeView extends View {
     private ArrayList<Estado> mCirclesSelected;
     private Transicao mLinesSelected;
 
-	ArrayList<Estado> mCircles;
+    ArrayList<Estado> mCircles;
 
     ListaDeTransicoes listaDeTransicoes;
 
@@ -60,12 +63,9 @@ public class TicTacToeView extends View {
 
     private void createLines(){
         listaDeTransicoes = new ListaDeTransicoes();
-        //listaDeTransicoes.add(mCircles.get(0), mCircles.get(1));
     }
 
     private Transicao addLines(Coordinate origin, Coordinate destination, Estado begin, Estado end){
-        //Transicao line1 = new Transicao("1", origin, destination);
-        //mLines.add(line1);
         return listaDeTransicoes.add(origin, destination, begin, end);
     }
 
@@ -74,7 +74,7 @@ public class TicTacToeView extends View {
      */
 	private void createCircles() {
         mCircles = new ArrayList<Estado>();
-        Estado estado1 = new Estado("q"+Math.random(), true, false);
+        Estado estado1 = new Estado("q"+Math.random(), false, true);
         estado1.setCurrentX(90);
         estado1.setCurrentY(100);
 
@@ -94,6 +94,7 @@ public class TicTacToeView extends View {
     public void removeAllCircles(){
         mCircles.clear();
     }
+
     /*
         Redesenha a tela inteira
      */
@@ -114,6 +115,7 @@ public class TicTacToeView extends View {
 
 			// 5. force redraw
 			invalidate();
+
 		}
 	}
 
@@ -215,30 +217,17 @@ public class TicTacToeView extends View {
 
         int distanciaDaBorda = 10;
 
-
         float inicioX = (float) (( h - Circle.RAIO - distanciaDaBorda) * Math.cos( Math.toRadians( gr ) ));
         float inicioY = (float) (( h - Circle.RAIO - distanciaDaBorda) * Math.sin( Math.toRadians( gr ) ));
 
         transicao.getInicio().setAixisX(inicioX+estado.getCurrentX());
         transicao.getInicio().setAixisY(inicioY+estado.getCurrentY());
+        Arrow arrow1 = new Arrow(new Coordinate(transicao.getInicio().getAixisX(), transicao.getInicio().getAixisY()),
+                        canvas, transicao.getCor(), Arrow.HORIZONTAL);
 
-        float x= transicao.getInicio().getAixisX();
-        float y=transicao.getInicio().getAixisY();
+        arrow1.rotate(gr);
+        arrow1.draw();
 
-        //put the lines in an array
-        float[] linePts = new float[] { x-10, y+5, x-10, y-5};
-
-        //create the matrix
-        Matrix rotateMat = new Matrix();
-
-        //rotate the matrix around the center
-        rotateMat.setRotate((float) gr, x, y);
-        rotateMat.mapPoints(linePts);
-
-        canvas.drawLine(x, y, linePts[0], linePts[1], transicao.getCor());
-        canvas.drawLine(x, y, linePts[2], linePts[3], transicao.getCor());
-
-        ///
         // gera a hipotenusa
         h = Util.gerarHipotenusa(
                 transicao.getEnd().getCurrentX(), transicao.getEnd().getCurrentY(),
@@ -261,31 +250,16 @@ public class TicTacToeView extends View {
         transicao.getFim().setAixisX(inicioX+ transicao.diferenteBegin(estado).getCurrentX());
         transicao.getFim().setAixisY(inicioY+ transicao.diferenteBegin(estado).getCurrentY());
 
-        x = transicao.getFim().getAixisX();
-        y = transicao.getFim().getAixisY();
+        Arrow arrow2 = new Arrow(new Coordinate(transicao.getFim().getAixisX(), transicao.getFim().getAixisY()),
+                canvas, transicao.getCor(), Arrow.HORIZONTAL);
 
-        //put the lines in an array
-        linePts = new float[] { x-10, y+5, x-10, y-5};
-
-        //create the matrix
-        rotateMat = new Matrix();
-
-        //rotate the matrix around the center
-        rotateMat.setRotate((float) gr, x, y);
-        rotateMat.mapPoints(linePts);
-
-        canvas.drawLine(x, y, linePts[0], linePts[1], transicao.getCor());
-        canvas.drawLine(x, y, linePts[2], linePts[3], transicao.getCor());
-
+        arrow2.rotate(gr);
+        arrow2.draw();
 
     }
     //Desenha todos os circulos na tela do celular
 	private void drawCirclesOnCanvas(Canvas canvas) {
 		for (Estado c : mCircles) {
-
-//            estado2.setCurrentX(300);
-//            estado2.setCurrentY(200);
-
 
             Paint paint = new Paint();
             paint.setColor(Color.BLACK);
@@ -298,17 +272,14 @@ public class TicTacToeView extends View {
             //                       270                 150     330                   200
             canvas.drawArc(oval1, 0, -180, false, paint);
 
-            float arrowCentroX = c.getCurrentX() - Circle.RAIO+10;
-            float arrowCentroY = c.getCurrentY() - Circle.RAIO+5;
+            Arrow arrow = new Arrow(new Coordinate(c.getCurrentX(), c.getCurrentY()), canvas, paint, Arrow.VERTICAl);
+            arrow.translation(-Circle.RAIO+10, -Circle.RAIO+5);
+            arrow.draw();
 
-            canvas.drawCircle(c.getCurrentX(), c.getCurrentY(), c.getRadius(), c.getCor());
-            canvas.drawLine(arrowCentroX, arrowCentroY, arrowCentroX-5, arrowCentroY-10, paint);
-            canvas.drawLine(arrowCentroX, arrowCentroY, arrowCentroX+5, arrowCentroY-10, paint);
+            c.setCanvas(canvas);
+            c.draw();
+
             canvas.drawText(c.getNome(),c.getCurrentX(), c.getCurrentY()-73, paint);
-
-
-            canvas.drawText(c.getNome(),c.getCurrentX(), c.getCurrentY(), paint);
-
 
             if (c.isMoveu()) {
                 int i;
@@ -317,7 +288,6 @@ public class TicTacToeView extends View {
                     //Circulo é a origem
                     if (t.get(i).equalsBegin(c)) {
                         delocaPontosParaBorda(t.get(i), c, canvas);
-
 
                         //linha tg
 
@@ -358,8 +328,10 @@ public class TicTacToeView extends View {
             float fimX = l.getFim().getAixisX();
             float fimY = l.getFim().getAixisY();
 
+            l.setCanvas(canvas);
+            l.draw();
+
             if(l.isAbilitado()) {
-                canvas.drawLine(inicioX, inicioY, fimX, fimY, l.getCor());
                 Paint paint =  l.getCor();
                 paint.setTextSize(20);
                 canvas.drawText(l.getSimbolo(), (fimX + inicioX)/2, (fimY + inicioY)/2, paint);
@@ -428,10 +400,6 @@ public class TicTacToeView extends View {
 
 
     private Line findLineClosestToTouchEvent(float x, float y) {
-        float tempdistOne = 0;
-        float tempdisttwo = 0;
-        float tempdist = 0;
-        float sizeLine = 0;
         Transicao selectedLine = null;
 
         if(mLinesSelected != null){
@@ -541,5 +509,12 @@ public class TicTacToeView extends View {
         });
 
         mBuilder.show();
+    }
+
+    public void changeToEndState() {
+        if (mCirclesSelected != null) {
+            Estado state = mCirclesSelected.get(0);
+            state.setFinal(!state.isFinal());
+        }
     }
 }

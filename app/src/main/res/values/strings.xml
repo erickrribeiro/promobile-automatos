@@ -6,4 +6,6 @@
     <string name="action_delete_transition">Deletar transição</string>
     <string name="action_altera_estado">Alterar Label</string>
     <string name="action_altera_transition">Alterar transição</string>
+    <string name="action_altera_transition_for_state_final">Alterar para estado final</string>
+    <string name="action_altera_transition_for_state_Initial">Alterar para estado Inicial</string>
 </resources>

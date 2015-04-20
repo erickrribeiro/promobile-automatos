@@ -1,17 +1,25 @@
-package epilepticdetector.promobile.com.construtordeautomatos;
+package epilepticdetector.promobile.com.construtordeautomatos.transition;
 
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
-import java.util.List;
+import epilepticdetector.promobile.com.construtordeautomatos.ActionOfObject;
+import epilepticdetector.promobile.com.construtordeautomatos.Coordinate;
+
 /**
  * Created by erickribeiro on 18/03/15.
  */
-public class Line extends Reta{
+public class Line extends Reta implements ActionOfObject {
     private Coordinate inicio;
     private Coordinate fim;
 
     private Paint cor ;
+    private Canvas canvas;
+
+    private Arrow arrowOfLeft;
+    private Arrow arrowOfRight;
+
     private boolean selecionado;
 
     private boolean abilitado;
@@ -22,9 +30,8 @@ public class Line extends Reta{
 
     public static  final int DISTANCIA = 40;
 
-    public Line( Coordinate inicio, Coordinate fim ){
+    public Line( Coordinate inicio, Coordinate fim){
         super();
-
         this.cor = new Paint();
         this.cor.setColor(Color.BLACK);
         this.cor.setAntiAlias(true);
@@ -33,6 +40,7 @@ public class Line extends Reta{
         this.inicio = inicio;
         this.fim = fim;
         this.abilitado = false;
+
     }
 
     public void setFim(Coordinate fim) {
@@ -110,5 +118,27 @@ public class Line extends Reta{
         return abilitado;
     }
 
+    @Override
+    public void draw() {
+        if(isAbilitado()) {
+            canvas.drawLine(
+                    inicio.getAixisX(), inicio.getAixisY(),
+                    fim.getAixisX(), fim.getAixisY(),
+                    this.cor);
+        }
+    }
 
+    @Override
+    public void translation(float x, float y) {
+
+    }
+
+    @Override
+    public void rotate(double angle) {
+
+    }
+
+    public void setCanvas(Canvas canvas) {
+        this.canvas = canvas;
+    }
 }

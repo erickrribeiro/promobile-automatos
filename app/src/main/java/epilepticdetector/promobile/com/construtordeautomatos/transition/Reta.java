@@ -1,9 +1,9 @@
-package epilepticdetector.promobile.com.construtordeautomatos;
-
-import android.util.Log;
+package epilepticdetector.promobile.com.construtordeautomatos.transition;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import epilepticdetector.promobile.com.construtordeautomatos.Util;
 
 /**
  * Created by erickribeiro on 29/03/15.

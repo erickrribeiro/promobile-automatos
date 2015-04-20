@@ -14,4 +14,8 @@
         android:orderInCategory="100" app:showAsAction="never" />
     <item android:id="@+id/action_altera_transition" android:title="@string/action_altera_transition"
         android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_altera_transition_for_state_final" android:title="@string/action_altera_transition_for_state_final"
+        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_altera_transition_for_state_initial" android:title="@string/action_altera_transition_for_state_final"
+        android:orderInCategory="100" app:showAsAction="never" />
 </menu>
